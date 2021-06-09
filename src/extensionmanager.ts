@@ -244,6 +244,7 @@ export class ExtensionManager implements Disposable {
         this._settings = new Settings(); //We need settings before showing the Welcome message
         Telemetry.Initialize(this._settings); //Need to initialize telemetry for showing welcome message
         if (!reinitializing) {
+            await this.showFarewellMessage();
             await this.showWelcomeMessage(); //Ensure we show the message before hooking workspace.onDidChangeConfiguration
         }
 
@@ -442,7 +443,7 @@ export class ExtensionManager implements Disposable {
     //Ensure this is async (and is awaited on) so that the extension doesn't continue until user deals with message
     private async showWelcomeMessage(): Promise<void> {
         if (this._settings.ShowWelcomeMessage) {
-            const welcomeMessage: string = `Welcome to version ${Constants.ExtensionVersion} of the Team Services extension!`;
+            const welcomeMessage: string = `This is version ${Constants.ExtensionVersion} of the Azure Repos extension.`;
             const messageItems: IButtonMessageItem[] = [];
             messageItems.push({ title : Strings.LearnMore,
                                 url : Constants.ReadmeLearnMoreUrl,
@@ -454,6 +455,21 @@ export class ExtensionManager implements Disposable {
             const chosenItem: IButtonMessageItem = await VsCodeUtils.ShowInfoMessage(welcomeMessage, ...messageItems);
             if (chosenItem && chosenItem.title === Strings.DontShowAgain) {
                 this._settings.ShowWelcomeMessage = false;
+            }
+        }
+    }
+
+    private async showFarewellMessage(): Promise<void> {
+        if (this._settings.ShowFarewellMessage) {
+            const farewellMessage: string = `The Azure Repos extension has been sunsetted.`;
+            const messageItems: IButtonMessageItem[] = [];
+            messageItems.push({ title : Strings.LearnMore,
+                                url : Constants.FarewellLearnMoreUrl,
+                                telemetryId : TelemetryEvents.FarewellLearnMoreClick });
+            messageItems.push({ title : Strings.DontShowAgain });
+            const chosenItem: IButtonMessageItem = await VsCodeUtils.ShowInfoMessage(farewellMessage, ...messageItems);
+            if (chosenItem && chosenItem.title === Strings.DontShowAgain) {
+                this._settings.ShowFarewellMessage = false;
             }
         }
     }
@@ -497,7 +513,7 @@ export class ExtensionManager implements Disposable {
         }
         Logger.LogDebug("IsSsh: " + this._repoContext.IsSsh);
         Logger.LogDebug("proxy: " + (Utils.IsProxyEnabled() ? "enabled" : "not enabled")
-                        + ", team services: " + this._serverContext.RepoInfo.IsTeamServices.toString());
+                        + ", azure devops services: " + this._serverContext.RepoInfo.IsTeamServices.toString());
     }
 
     private logStart(loggingLevel: string, rootPath: string): void {
@@ -523,7 +539,7 @@ export class ExtensionManager implements Disposable {
         if (this._teamServicesStatusBarItem !== undefined) {
             //TODO: Should the default command be to display the message?
             this._teamServicesStatusBarItem.command = commandOnClick; // undefined clears the command
-            this._teamServicesStatusBarItem.text = `Team $(icon octicon-stop)`;
+            this._teamServicesStatusBarItem.text = `Team $(stop)`;
             this._teamServicesStatusBarItem.tooltip = message;
             this._teamServicesStatusBarItem.show();
         }
@@ -572,24 +588,24 @@ export class ExtensionManager implements Disposable {
                     //There is either no remote defined yet or it isn't a Team Services repo
                     if (this._repoContext.RemoteUrl !== undefined) {
                         //We previously had a Team Services repo and now we don't, reinitialize
-                        Logger.LogInfo("remote was removed, previously had a Team Services remote, re-initializing the extension");
+                        Logger.LogInfo("remote was removed, previously had an Azure Repos remote, re-initializing the extension");
                         this.Reinitialize();
                         return;
                     }
                     //There was no previous remote, so do nothing
-                    Logger.LogInfo("remote does not exist, no previous Team Services remote, nothing to do");
+                    Logger.LogInfo("remote does not exist, no previous Azure Repos remote, nothing to do");
                 } else if (this._repoContext !== undefined) {
                     //We have a valid gitContext already, check to see what changed
                     if (this._repoContext.RemoteUrl !== undefined) {
                         //The config has changed, and we had a Team Services remote already
                         if (remote.toLowerCase() !== this._repoContext.RemoteUrl.toLowerCase()) {
                             //And they're different, reinitialize
-                            Logger.LogInfo("remote changed to a different Team Services remote, re-initializing the extension");
+                            Logger.LogInfo("remote changed to a different Azure Repos remote, re-initializing the extension");
                             this.Reinitialize();
                         }
                     } else {
                         //The remote was initialized to a Team Services remote, reinitialize
-                        Logger.LogInfo("remote initialized to a Team Services remote, re-initializing the extension");
+                        Logger.LogInfo("remote initialized to an Azure Repos remote, re-initializing the extension");
                         this.Reinitialize();
                     }
                 }
@@ -603,7 +619,7 @@ export class ExtensionManager implements Disposable {
 
     private showFeedbackItem(): void {
         this._feedbackStatusBarItem.command = CommandNames.SendFeedback;
-        this._feedbackStatusBarItem.text = `$(icon octicon-megaphone)`;
+        this._feedbackStatusBarItem.text = `$(megaphone)`;
         this._feedbackStatusBarItem.tooltip = Strings.SendFeedback;
         this._feedbackStatusBarItem.show();
     }

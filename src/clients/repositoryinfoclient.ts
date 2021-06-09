@@ -60,14 +60,18 @@ export class RepositoryInfoClient {
                 // recreate the url.
                 // If validation fails, we return false.
                 collectionName = repositoryInfo.Account;
-                serverUrl = `https://${repositoryInfo.Account}.visualstudio.com/`;
+                if (RepoUtils.IsTeamFoundationServicesAzureRepo(this._repoContext.RemoteUrl)) {
+                    serverUrl = `https://${repositoryInfo.Host}/${repositoryInfo.Account}/`;
+                } else {
+                    serverUrl = `https://${repositoryInfo.Account}.visualstudio.com/`;
+                }
                 const valid: boolean = await this.validateTfvcCollectionUrl(serverUrl);
                 if (!valid) {
                     const errorMsg: string = `${Strings.UnableToValidateTeamServicesCollection} Collection name: '${collectionName}', Url: '${serverUrl}'`;
                     Logger.LogDebug(errorMsg);
                     throw new Error(errorMsg);
                 }
-                Logger.LogDebug(`Successfully validated the Team Services TFVC repository. Collection name: '${collectionName}', 'Url: ${serverUrl}'`);
+                Logger.LogDebug(`Successfully validated the hosted TFVC repository. Collection name: '${collectionName}', 'Url: ${serverUrl}'`);
             } else { //This could be either a TFVC context or an External context
                 serverUrl = this._repoContext.RemoteUrl;
                 // A full Team Foundation Server collection url is required for the validate call to succeed.

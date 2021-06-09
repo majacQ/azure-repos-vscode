@@ -1,8 +1,8 @@
 {
   "name": "team",
-  "displayName": "Visual Studio Team Services",
-  "description": "Connect to Team Services including Team Foundation Version Control (TFVC). Monitor your builds and manage your pull requests and work items for your TFVC or Git source repositories.",
-  "version": "1.122.0",
+  "displayName": "Azure Repos",
+  "description": "Connect to Azure Repos and work with Git and Team Foundation Version Control (TFVC) repositories. Manage your pull requests, work items, and more.",
+  "version": "1.161.1",
   "publisher": "ms-vsts",
   "icon": "assets/team.png",
   "markdown": "standard",
@@ -15,7 +15,8 @@
     "Team Foundation Server",
     "Team Services",
     "Visual Studio Team Services",
-    "TFVC"
+    "TFVC",
+    "Azure Repos"
   ],
   "categories": [
     "SCM Providers",
@@ -23,11 +24,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vsts-vscode.git"
+    "url": "https://github.com/Microsoft/azure-repos-vscode.git"
   },
-  "bugs": "https://github.com/Microsoft/vsts-vscode/issues",
+  "bugs": "https://github.com/Microsoft/azure-repos-vscode/issues",
   "license": "SEE LICENSE IN LICENSE.txt",
-  "homepage": "https://github.com/Microsoft/vsts-vscode/blob/master/README.md",
+  "homepage": "https://github.com/Microsoft/azure-repos-vscode/blob/master/README.md",
   "engines": {
     "vscode": "^1.12.0"
   },
@@ -228,12 +229,12 @@
     },
     "configuration": {
       "type": "object",
-      "title": "Team Services extension options",
+      "title": "Azure Repos",
       "properties": {
         "team.appInsights.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enables Application Insights telemetry collection for the Team Services extension."
+          "description": "Enables Application Insights telemetry collection for the Azure Repos extension."
         },
         "team.logging.level": {
           "type": "string",
@@ -275,6 +276,11 @@
           "type": "boolean",
           "default": true,
           "description": "Tracks whether the extension should display the Welcome message after the initial installation."
+        },
+        "team.showFarewellMessage": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the deprecation message again?"
         },
         "tfvc.location": {
           "type": "string",
@@ -490,7 +496,6 @@
     "@types/xmldoc": "^0.5.0",
     "chai": "^3.4.1",
     "del": "^2.2.0",
-    "gulp": "^3.9.0",
     "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^3.0.1",
     "gulp-sourcemaps": "^2.4.0",
@@ -510,6 +515,7 @@
     "event-stream": "^3.3.2",
     "fs": "0.0.2",
     "git-repo-info": "^1.1.2",
+    "gulp": "^3.9.1",
     "open": "0.0.5",
     "opener": "^1.4.1",
     "parse-git-config": "^0.3.1",
@@ -520,7 +526,7 @@
     "url": "^0.11.0",
     "uuid": "^3.0.1",
     "vso-node-api": "^5.1.1",
-    "vsts-device-flow-auth": "^1.121.0",
+    "vsts-device-flow-auth": "^1.136.0",
     "winston": "2.3.1",
     "xml2js": "^0.4.17",
     "xmldoc": "^0.5.1"

@@ -6,6 +6,7 @@
 
 import { BuildResult } from "vso-node-api/interfaces/BuildInterfaces";
 import { Strings } from "./strings";
+import * as vscode from "vscode";
 
 import * as fs from "fs";
 import * as path from "path";
@@ -48,17 +49,17 @@ export class Utils {
     public static GetBuildResultIcon(result: BuildResult) : string {
         switch (result) {
             case BuildResult.Succeeded:
-                return "octicon-check";
+                return "check";
             case BuildResult.Canceled:
-                return "octicon-alert";
+                return "alert";
             case BuildResult.Failed:
-                return "octicon-stop";
+                return "stop";
             case BuildResult.PartiallySucceeded:
-                return "octicon-alert";
+                return "alert";
             case BuildResult.None:
-                return "octicon-question";
+                return "question";
             default:
-                return "octicon-question";
+                return "question";
         }
     }
 
@@ -153,6 +154,13 @@ export class Utils {
 
     //Use open for Windows and Mac, opener for Linux
     public static OpenUrl(url: string) : void {
+        // Use the built in VS Code openExternal function if present.
+        if ((<any>vscode.env).openExternal) {
+            (<any>vscode.env).openExternal(vscode.Uri.parse(url));
+            return;
+        }
+
+        // Fallback to other node modules for old versions of VS Code
         switch (process.platform) {
             case "win32":
             case "darwin":
