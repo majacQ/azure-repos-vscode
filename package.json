@@ -520,7 +520,7 @@
     "opener": "^1.4.1",
     "parse-git-config": "^0.3.1",
     "path": "^0.12.7",
-    "readable-stream": "^2.1.4",
+    "readable-stream": "^3.6.0",
     "request-promise-native": "^1.0.4",
     "underscore": "^1.8.3",
     "url": "^0.11.0",
